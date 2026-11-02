@@ -1,0 +1,12 @@
+{
+  "name": "ai-code-review-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static vanilla-JS frontend for the AI Code Review Assistant",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

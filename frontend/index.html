@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>AI Code Review Assistant</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Optional override: <script>window.APP_CONFIG = { API_BASE_URL: 'http://localhost:4000' };</script> -->
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <h1>AI Code Review Assistant</h1>
+    </div>
+    <div class="health" id="health" role="status" aria-live="polite">
+      <span class="health-dot" id="health-dot" data-state="unknown" aria-hidden="true"></span>
+      <span id="health-text">Checking backend…</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel" aria-labelledby="input-heading">
+      <h2 id="input-heading">Your code</h2>
+      <form id="review-form" novalidate>
+        <div class="field">
+          <div class="field-head">
+            <label for="code">Code to review</label>
+            <span class="char-count" id="char-count" aria-live="polite">0 / 20,000</span>
+          </div>
+          <textarea id="code" name="code" rows="18" spellcheck="false" autocomplete="off"
+                    aria-describedby="code-error char-count"
+                    placeholder="Paste a function, file, or snippet here…"></textarea>
+          <p class="field-error" id="code-error" hidden></p>
+        </div>
+
+        <div class="field">
+          <label for="language">Language</label>
+          <select id="language" name="language" aria-describedby="language-error">
+            <option value="">Loading…</option>
+          </select>
+          <p class="field-error" id="language-error" hidden></p>
+        </div>
+
+        <fieldset class="field focus-group">
+          <legend>Focus areas <span class="hint">(optional — none means all)</span></legend>
+          <div class="checkbox-row" id="focus-options"></div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" id="submit-btn">
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-label">Review code</span>
+          </button>
+          <button type="button" class="btn btn-secondary" id="sample-btn">Load sample</button>
+          <button type="button" class="btn btn-ghost" id="clear-btn">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="results-heading">
+      <h2 id="results-heading">Review</h2>
+
+      <div class="error-banner" id="error-banner" role="alert" hidden>
+        <div class="error-body">
+          <strong class="error-title" id="error-title"></strong>
+          <p class="error-message" id="error-message"></p>
+          <ul class="error-details" id="error-details" hidden></ul>
+          <p class="error-request-id" id="error-request-id" hidden></p>
+        </div>
+        <div class="error-actions">
+          <button type="button" class="btn btn-small btn-secondary" id="retry-btn" hidden>Retry</button>
+          <button type="button" class="btn-icon" id="dismiss-error-btn" aria-label="Dismiss error">&times;</button>
+        </div>
+      </div>
+
+      <div id="results" aria-live="polite" aria-busy="false">
+        <div class="empty-state" id="empty-state">
+          <p>Paste some code and press <strong>Review code</strong> to get feedback.</p>
+          <p class="hint">Tip: press <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd> in the editor to submit; <kbd>Esc</kbd> then <kbd>Tab</kbd> leaves the editor.</p>
+        </div>
+
+        <div class="loading-state" id="loading-state" hidden>
+          <span class="spinner spinner-lg" aria-hidden="true"></span>
+          <p>Reviewing your code… this can take a few seconds.</p>
+        </div>
+
+        <article class="review" id="review" hidden>
+          <div class="review-head">
+            <div class="score-badge" id="score-badge" aria-label="Overall score">
+              <span class="score-value" id="score-value">–</span>
+              <span class="score-max">/10</span>
+            </div>
+            <div class="review-summary">
+              <h3>Summary</h3>
+              <p id="summary"></p>
+              <p class="meta" id="meta"></p>
+            </div>
+          </div>
+
+          <section class="strengths" id="strengths-section" aria-labelledby="strengths-heading">
+            <h3 id="strengths-heading">Strengths</h3>
+            <ul id="strengths-list"></ul>
+          </section>
+
+          <section class="issues" aria-labelledby="issues-heading">
+            <div class="issues-head">
+              <h3 id="issues-heading">Issues <span class="count" id="issues-count"></span></h3>
+              <div class="filter-group" role="group" aria-label="Filter issues by severity" id="severity-filter">
+                <button type="button" class="chip-btn" data-severity="all" aria-pressed="true">All</button>
+                <button type="button" class="chip-btn" data-severity="critical" aria-pressed="false">Critical</button>
+                <button type="button" class="chip-btn" data-severity="major" aria-pressed="false">Major</button>
+                <button type="button" class="chip-btn" data-severity="minor" aria-pressed="false">Minor</button>
+                <button type="button" class="chip-btn" data-severity="info" aria-pressed="false">Info</button>
+              </div>
+            </div>
+            <ol class="issue-list" id="issue-list"></ol>
+            <p class="hint" id="issues-empty" hidden></p>
+          </section>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <span>API: <code id="api-url"></code></span>
+  </footer>
+</body>
+</html>
